@@ -1,14 +1,14 @@
 #pragma once
 #include <iostream>
 #include "glm/glm.hpp"
-#include "Square.h"
+#include "Quad.h"
 #include "GLFW/glfw3.h"
 
-Square* gridResizeVec(Square* squares, int newSize, float squareSize)
+Quad* gridResizeVec(Quad* squares, int newSize, float squareSize)
 {
 	using namespace glm;
 	delete[] squares;
-	squares = new Square[newSize];
+	squares = new Quad[newSize];
 	for (int i = 0; i < newSize; i++)
 	{
 		squares[i].scale = vec2(squareSize);
@@ -26,7 +26,7 @@ void gridLoop(GLFWwindow* window)
 	int rowSize = 10;
 	int colSize = 10;
 	int numberOfSquares = rowSize * colSize;
-	Square* squares = new Square[numberOfSquares];
+	Quad* squares = new Quad[numberOfSquares];
 	int sepDist = 60;
 	for (int i = 0; i < numberOfSquares; i++)
 	{
@@ -97,7 +97,7 @@ void gridLoop(GLFWwindow* window)
 void circleLoop(GLFWwindow* window)
 {
 	using namespace glm;
-	Square square = Square();
+	Quad square = Quad();
 	vec2 center = vec2(400, 300);
 	int numberOfSquares = 32;
 	float radius = 250;
@@ -159,10 +159,10 @@ void testLoop(GLFWwindow* window)
 {
 	using namespace glm;
 	const int totalSquares = 3;
-	Square squares[totalSquares];
+	Quad squares[totalSquares];
 	for (int i = 0; i < totalSquares; i++)
-		squares[i] = Square(vec2(64), 0, vec2(64));
-	Square* heldSquare = nullptr;
+		squares[i] = Quad(vec2(64), 0, vec2(64));
+	Quad* heldSquare = nullptr;
 	double mouseX, mouseY;
 	while (!glfwWindowShouldClose(window))
 	{
@@ -187,8 +187,37 @@ void testLoop(GLFWwindow* window)
 		if (heldSquare)
 			heldSquare->pos = vec2(mouseX, mouseY);
 
-		for(Square s : squares)
+		for(Quad s : squares)
 			s.draw();
+
+		glfwSwapBuffers(window);
+
+		glfwPollEvents();
+	}
+}
+
+void collisionTestLoop(GLFWwindow* window)
+{
+	using namespace glm;
+	int gamePeiceSize = 64;
+	int offSet = gamePeiceSize / 2;
+	Quad gamePieces[4];
+	for (int i = 0; i < 4; i++)
+	{
+		Quad *piece = &gamePieces[i];
+		piece->originOffset = vec2(offSet);
+		piece->pos = vec2(gamePeiceSize * i, 0);
+		piece->scale = vec2(gamePeiceSize, gamePeiceSize * 2);
+		if (i % 2)
+		piece->color = vec4(1, 0, 0, 1);
+	}
+
+	while (!glfwWindowShouldClose(window))
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		for (Quad peice : gamePieces)
+			peice.draw();
 
 		glfwSwapBuffers(window);
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "Shader.h"
-#include "Square.h"
+#include "Quad.h"
 #include "playground.hpp"
 
 #include "GL/glew.h"
@@ -43,14 +43,15 @@ int main()
 	glUniformMatrix4fv(glGetUniformLocation(shader, "viewMatrix"), 1, false, value_ptr(viewMatrix));
 
 	//set up the square buffers
-	Square::initBuffers(shader);
+	Quad::initBuffers(shader);
 
 	//main loop
-	circleLoop(window);
+	//circleLoop(window);
 	//gridLoop(window);
 	//testLoop(window);
+	collisionTestLoop(window);
 
-	Square::destroyBuffers();
+	Quad::destroyBuffers();
 
 	//cleanup and exit
 	glDeleteProgram(shader);

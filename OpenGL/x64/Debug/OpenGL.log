@@ -1,2 +1,7 @@
 ﻿  Source.cpp
+c:\users\evan\documents\visual studio 2017\projects\shared\opengl\opengl\playground.hpp(208): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
   OpenGL.vcxproj -> C:\Users\Evan\Documents\Visual Studio 2017\Projects\shared\OpenGL\x64\Debug\OpenGL.exe

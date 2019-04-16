@@ -141,12 +141,12 @@
   <ItemGroup>
     <ClInclude Include="playground.hpp" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Square.h" />
+    <ClInclude Include="Quad.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Square.cpp" />
+    <ClCompile Include="Quad.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

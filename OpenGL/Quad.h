@@ -6,7 +6,7 @@
 
 const static int vertSize = 2;
 
-class Square
+class Quad
 {
 private:
 	const static float halfSize;
@@ -20,22 +20,27 @@ private:
 public:
 	unsigned int id;
 	glm::vec2 pos;
+	glm::vec2 originOffset = glm::vec2(0);
 	glm::vec2 scale;
 	float rotation;
 	glm::vec3 color;
 	glm::mat4 modelMatrix;
+	bool movable = true;
+
 
 	static void initBuffers(GLuint shader);
 	static void destroyBuffers();
 
-	Square(
+	Quad(
 		glm::vec2 position = glm::vec2(0.0f),
 		float rotation = 0,
 		glm::vec2 scale = glm::vec2(1.0f),
 		glm::vec3 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
 	);
 	void draw();
+	bool checkCollision(Quad other);
 	bool checkCollision(glm::vec2 point);
-	~Square();
+	bool translate(glm::vec2 offSet);
+	~Quad();
 };
 
