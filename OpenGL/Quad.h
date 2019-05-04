@@ -25,12 +25,12 @@ public:
 	float rotation;
 	glm::vec3 color;
 	glm::mat4 modelMatrix;
-	bool movable = true;
 
-
+	//static functions
 	static void initBuffers(GLuint shader);
 	static void destroyBuffers();
 
+	//functions
 	Quad(
 		glm::vec2 position = glm::vec2(0.0f),
 		float rotation = 0,
@@ -38,9 +38,9 @@ public:
 		glm::vec3 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
 	);
 	void draw();
-	bool checkCollision(Quad other);
+	void setOriginTopLeft();
+	void setOriginTopRight();
 	bool checkCollision(glm::vec2 point);
-	bool translate(glm::vec2 offSet);
 	~Quad();
 };
 

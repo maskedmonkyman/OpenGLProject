@@ -70,27 +70,24 @@ void Quad::draw()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-bool Quad::checkCollision(Quad other)
+void Quad::setOriginTopLeft()
 {
-	return false;
+	originOffset = glm::vec2(scale.x / 2, scale.y / 2);
+}
+
+void Quad::setOriginTopRight()
+{
+	originOffset = glm::vec2(-scale.x / 2, scale.y / 2);
 }
 
 bool Quad::checkCollision(glm::vec2 point)
 {
 	if (pos.x - scale.x / 2 <= point.x && point.x <= pos.x + scale.x / 2
-		&& pos.y - scale.y / 2 <= point.y && point.y <= pos.y + scale.y / 2
-		)
+		&& pos.y - scale.y / 2 <= point.y && point.y <= pos.y + scale.y / 2)
 	{
 		return true;
 	}
 	return false;
-}
-
-//Todo add colision detection to translate
-bool Quad::translate(glm::vec2 offSet)
-{
-	pos += offSet;
-	return true;
 }
 
 Quad::~Quad()

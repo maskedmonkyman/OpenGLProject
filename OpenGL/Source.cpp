@@ -1,30 +1,28 @@
 #include <iostream>
-#include <vector>
 #include "Shader.h"
 #include "Quad.h"
 #include "playground.hpp"
+#include "game.hpp"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "GLM/glm.hpp"
 #include "GLM/ext.hpp"
 #include "GLM/gtc/type_ptr.hpp"
-#include "GLM/gtx/transform.hpp"
 
 constexpr int WINDOW_WIDTH = 800;
 constexpr int WINDOW_HEIGHT = 600;
 
-GLFWwindow* init();
+GLFWwindow* init(); //function prototype
 
 int main()
 {
+	using namespace glm;
 	//startup
 	GLFWwindow* window = init();
 	if (!window)
 		return -1;
 
-	using namespace glm;
-	
 	GLuint shader = createShader(
 		readFromFile("res/vertex.shader"),	
 		readFromFile("res/fragment.shader")
@@ -34,8 +32,7 @@ int main()
 
 	//the camaras projection matrix
 	mat4 projectionMatrix = ortho(0.0f, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 0.0f);
-	//perspective(90.0f, 4.0f / 3.0f, 0.1f, 500.0f);
-	//view matrix based on the look at direction from (0,1) -> (0,0) with
+	//view matrix based on the look at direction from (0,1) -> (0,0) with y as the camera's up
 	mat4 viewMatrix = lookAt(vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
 	//set our const uniforms
@@ -49,7 +46,8 @@ int main()
 	//circleLoop(window);
 	//gridLoop(window);
 	//testLoop(window);
-	collisionTestLoop(window);
+	//collisionTestLoop(window);
+	gameLoop(window);
 
 	Quad::destroyBuffers();
 

@@ -4,6 +4,8 @@
 #include "Quad.h"
 #include "GLFW/glfw3.h"
 
+//testing area
+
 Quad* gridResizeVec(Quad* squares, int newSize, float squareSize)
 {
 	using namespace glm;
@@ -19,7 +21,7 @@ Quad* gridResizeVec(Quad* squares, int newSize, float squareSize)
 void gridLoop(GLFWwindow* window)
 {
 	using namespace glm;
-	float squareSize = 50;
+	float squareSize = 60;
 	int indexResetValue = 0;
 	int rowIndex = indexResetValue;
 	int colIndex = indexResetValue;
@@ -27,7 +29,7 @@ void gridLoop(GLFWwindow* window)
 	int colSize = 10;
 	int numberOfSquares = rowSize * colSize;
 	Quad* squares = new Quad[numberOfSquares];
-	int sepDist = 60;
+	int sepDist = 61;
 	for (int i = 0; i < numberOfSquares; i++)
 	{
 		squares[i].scale = vec2(squareSize);
@@ -94,6 +96,24 @@ void gridLoop(GLFWwindow* window)
 	}
 }
 
+void printMat4(glm::mat4 mat)
+{
+	using namespace glm;
+	int x = 0, y = 0;
+	for (int i = 0; i < 16; i++)
+	{
+		if (x > 3)
+		{
+			x = 0;
+			y++;
+			printf("\n");
+		}
+		printf("%f ", mat[x][y]);
+		x++;
+	}
+	printf("\n\n");
+}
+
 void circleLoop(GLFWwindow* window)
 {
 	using namespace glm;
@@ -103,6 +123,18 @@ void circleLoop(GLFWwindow* window)
 	float radius = 250;
 	float ang = 0;
 	float angChange = 1;
+
+	mat4 modelMatrix = mat4(1.0f);
+
+	modelMatrix = glm::translate(modelMatrix, vec3(3, 3, 3));
+	printMat4(modelMatrix);
+
+	modelMatrix = glm::rotate(modelMatrix, (float) radians(30.0f), glm::vec3(1,1,1));
+	printMat4(modelMatrix);
+
+	modelMatrix = glm::scale(modelMatrix, vec3(1, 1, 0));
+	printMat4(modelMatrix);
+
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -161,7 +193,7 @@ void testLoop(GLFWwindow* window)
 	const int totalSquares = 3;
 	Quad squares[totalSquares];
 	for (int i = 0; i < totalSquares; i++)
-		squares[i] = Quad(vec2(64), 0, vec2(64));
+		squares[i] = Quad(vec2(64 + 64*i), 0, vec2(64));
 	Quad* heldSquare = nullptr;
 	double mouseX, mouseY;
 	while (!glfwWindowShouldClose(window))
@@ -200,7 +232,7 @@ void collisionTestLoop(GLFWwindow* window)
 {
 	using namespace glm;
 	int gamePeiceSize = 64;
-	int offSet = gamePeiceSize / 2;
+	float offSet = gamePeiceSize / 2;
 	Quad gamePieces[4];
 	for (int i = 0; i < 4; i++)
 	{
