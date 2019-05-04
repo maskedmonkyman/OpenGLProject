@@ -139,6 +139,7 @@
     <None Include="..\..\..\..\Documents\Visual Studio 2017\Projects\shared\OpenGL\OpenGL\res\vertex.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="game.hpp" />
     <ClInclude Include="playground.hpp" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Quad.h" />
