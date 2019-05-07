@@ -55,59 +55,68 @@ std::vector<Quad> makeBoard(glm::vec2 size, glm::vec2 pos, int boarderSize, int 
 	return board;
 }
 
-void makePieces() {
+// corner is the corner of the interior of the board, size is the size of single
+// square piece and sepDist is the seperation between the pieces. 
+std::vector<Quad> makePieces(glm::vec2 corner, int size, int sepDist) {
 	using namespace glm;
-	Quad squares[5];
-	Quad rectangles[5];
 
-	//how this works I don't know
-	squares[0] = glm::vec2(400, 300);
-	squares[1] = glm::vec2(300, 164);
-	squares[2] = glm::vec2(300, 368);
-	squares[3] = glm::vec2(500, 164);
-	squares[4] = glm::vec2(500, 368);
+	std::vector<Quad> pieces(10);
 
+	int gridSize = size + sepDist;
+	vec2 refPoint = vec2(corner.x + sepDist, corner.y + sepDist);
+
+	// square pieces (color and scale)
 	for (int i = 0; i < 5; i++) {
-		if (i == 1) {
-			rectangles[i].scale = glm::vec2(128, 64);
-			rectangles[i].color = glm::vec3(0, 1, 0);
+		if (i == 0) {
+			pieces[i].scale = glm::vec2((size * 2) + sepDist); // Big square
+			pieces[i].color = glm::vec3(1, 0, 0); // Red
 		}
 		else {
-			rectangles[i].scale = glm::vec2(64, 128);
-			rectangles[i].color = glm::vec3(0, 1, 0);
+			pieces[i].scale = glm::vec2(size); // Smaller Squares
+			pieces[i].color = glm::vec3(0, 1, 0); // Green
 		}
+		pieces[i].setOriginTopLeft();
 	}
 
-	squares[0].pos = vec2(400, 164);
-	squares[1].pos = vec2(300, 468);
-	squares[2].pos = vec2(368, 368);
-	squares[3].pos = vec2(432, 368);
-	squares[4].pos = vec2(300, 468);
-
-	for (int i = 0; i < 5; i++) {
-		if (i == 1) {
-			squares[i].scale = glm::vec2(128);
-			squares[i].color = glm::vec3(1, 0, 0);
+	// rectangle pieces (color and scale)
+	for (int i = 5; i < 10; i++) {
+		if (i == 5) {
+			pieces[i].scale = glm::vec2((size * 2) + sepDist, size); // Horizontal Rect
 		}
 		else {
-			squares[i].scale = glm::vec2(64);
-			squares[i].color = glm::vec3(0, 0, 1);
+			pieces[i].scale = glm::vec2(size, (size * 2) + sepDist); // Vertical Rect
 		}
+		pieces[i].setOriginTopLeft();
+		pieces[i].color = glm::vec3(0, 0, 1); // Blue
 	}
 
-	for (int i = 0; i < 5; i++) {
-		squares[i].draw();
-		rectangles[i].draw();
-	}
+	// Pieces Positions
+	// Big Red Square
+	pieces[0].pos = vec2(refPoint.x + (1 * gridSize), refPoint.y + (0 * gridSize));
+	// Small Green Squares
+	pieces[1].pos = vec2(refPoint.x + (0 * gridSize), refPoint.y + (4 * gridSize));
+	pieces[2].pos = vec2(refPoint.x + (1 * gridSize), refPoint.y + (3 * gridSize));
+	pieces[3].pos = vec2(refPoint.x + (2 * gridSize), refPoint.y + (3 * gridSize));
+	pieces[4].pos = vec2(refPoint.x + (3 * gridSize), refPoint.y + (4 * gridSize));
+	// Horizontal Rectangle
+	pieces[5].pos = vec2(refPoint.x + (1 * gridSize), refPoint.y + (2 * gridSize));
+	// Vertical Rectangle
+	pieces[6].pos = vec2(refPoint.x + (0 * gridSize), refPoint.y + (0 * gridSize));
+	pieces[7].pos = vec2(refPoint.x + (0 * gridSize), refPoint.y + (2 * gridSize));
+	pieces[8].pos = vec2(refPoint.x + (3 * gridSize), refPoint.y + (0 * gridSize));
+	pieces[9].pos = vec2(refPoint.x + (3 * gridSize), refPoint.y + (2 * gridSize));
+
+	return pieces;
 }
 
 void gameLoop(GLFWwindow* window)
 {
 	using namespace glm;
-	std::vector<Quad> board = makeBoard(vec2(300, 300), vec2(200,100), 46, 100);
-	//kevin, make game peice vectors/arrays local to this function scope and have thier init be
-	//returned by a function like above, this will make updating them later much easier since it
-	//will be local to the loop
+	std::vector<Quad> board = makeBoard(vec2(296, 368), vec2(200,100), 46, 152);
+	std::vector<Quad> pieces = makePieces(vec2(200, 100), 64, 8);
+
+	Quad* heldSquare = nullptr;
+	double mouseX, mouseY;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -116,7 +125,33 @@ void gameLoop(GLFWwindow* window)
 		for (Quad quad : board)
 			quad.draw();
 
-		makePieces();
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		{
+			glfwGetCursorPos(window, &mouseX, &mouseY);
+
+			if (!heldSquare)
+				for (int i = 0; i < 10; i++)
+				{
+					if (pieces[i].checkCollision(vec2(mouseX, mouseY)))
+					{
+						heldSquare = &pieces[i];
+					}
+				}
+		}
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+			heldSquare = nullptr;
+
+		if (heldSquare) {
+			for (int i = 0; i < 10; i++) {
+				if (!pieces[i].checkCollision(vec2(mouseX, mouseY))) {
+					heldSquare->pos = vec2(mouseX, mouseY);
+				}
+			}
+		}
+
+		for (Quad quad : pieces)
+			quad.draw();
 
 		glfwSwapBuffers(window);
 
