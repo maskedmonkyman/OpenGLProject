@@ -41,6 +41,8 @@ public:
 	void setOriginTopLeft();
 	void setOriginTopRight();
 	bool checkCollision(glm::vec2 point);
+
+	bool checkCollision(const Quad& other);
 	~Quad();
 };
 

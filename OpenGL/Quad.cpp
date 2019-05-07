@@ -90,6 +90,16 @@ bool Quad::checkCollision(glm::vec2 point)
 	return false;
 }
 
+bool Quad::checkCollision(const Quad& other) {
+	bool collisionX = originOffset.x + scale.x >= other.originOffset.x &&
+		other.originOffset.x + other.scale.x >= originOffset.x;
+
+	bool collisionY = originOffset.y + scale.y >= other.originOffset.y &&
+		other.originOffset.y + other.scale.y >= originOffset.y;
+
+	return collisionX && collisionY;
+}
+
 Quad::~Quad()
 {
 }

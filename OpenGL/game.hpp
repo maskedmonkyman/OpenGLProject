@@ -106,6 +106,11 @@ std::vector<Quad> makePieces(glm::vec2 corner, int size, int sepDist) {
 	pieces[8].pos = vec2(refPoint.x + (3 * gridSize), refPoint.y + (0 * gridSize));
 	pieces[9].pos = vec2(refPoint.x + (3 * gridSize), refPoint.y + (2 * gridSize));
 
+	for (int i = 0; i < 10; i++) {
+		pieces[i].pos += pieces[i].originOffset;
+		pieces[i].originOffset = vec2(0);
+	}
+
 	return pieces;
 }
 
@@ -143,11 +148,7 @@ void gameLoop(GLFWwindow* window)
 			heldSquare = nullptr;
 
 		if (heldSquare) {
-			for (int i = 0; i < 10; i++) {
-				if (!pieces[i].checkCollision(vec2(mouseX, mouseY))) {
-					heldSquare->pos = vec2(mouseX, mouseY);
-				}
-			}
+			heldSquare->pos = vec2(mouseX, mouseY);
 		}
 
 		for (Quad quad : pieces)
