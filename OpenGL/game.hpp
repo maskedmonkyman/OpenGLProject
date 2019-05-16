@@ -3,6 +3,7 @@
 
 #include "glm/glm.hpp"
 #include "Quad.h"
+#include "GamePiece.h"
 #include "GLFW/glfw3.h"
 
 #include <iostream>
@@ -125,33 +126,62 @@ std::vector<GamePiece> makePieces(glm::vec2 corner, int size, int sepDist) {
 	return pieces;
 }
 
-char getDirection(double currentX, double currentY, double lastX, double lastY) {
-	double changeX = currentX - lastX;
-	double changeY = lastY - currentY;
-	double deltaX = (changeX < 0) ? -changeX : changeX;
-	double deltaY = (changeY < 0) ? -changeY : changeY;
-	char direction;
+// All buttons are rectangles in a column. refPoint is the upper left corner of 
+// the first button. Size is how tall, width is double the size. sepdits is the
+// seperation between the buttons.
+std::vector<Quad>makeButtons(glm::vec2 refPoint, int size, int sepDist) {
+	using namespace glm;
 
-	if (deltaX > deltaY) {
-		if (changeX > 0) {
-			direction = 'R';
-		}
-		else {
-			direction = 'L';
-		}
+	std::vector<Quad> buttons(3);
+	// 0 is UNDO
+	// 1 is RESET
+	// 2 is EXIT
+
+	// Color
+	buttons[0].color = vec3(1, 0.834, 0);
+	buttons[1].color = vec3(0.980, 0.502, 0.447);
+	buttons[2].color = vec3(0.282, 0.239, 0.545);
+
+	// Scale
+	for (int i = 0; i < 3; i++) {
+		buttons[i].scale = vec2(2 * size, size);
+		buttons[i].setOriginTopLeft();
 	}
-	else {
-		if (changeY > 0) {
+
+	// Positions
+	for (int i = 0; i < 3; i++) {
+		buttons[i].pos = refPoint + vec2(0, i * (size + sepDist));
+	}
+
+	return buttons;
+}
+
+// getDirection using cell coordinates
+char getDirection(glm::vec2& currentCell, glm::vec2& lastCell) {
+	char direction;
+	glm::vec2 cardinalVec = currentCell - lastCell;
+
+	if (cardinalVec.y) {
+		if (cardinalVec.y < 0) {
 			direction = 'U';
 		}
 		else {
 			direction = 'D';
 		}
 	}
+	else {
+		if (cardinalVec.x < 0) {
+			direction = 'L';
+		}
+		else {
+			direction = 'R';
+		}
+	}
 	return direction;
 }
 
 void displayFilled(int dataAry[]) {
+	std::cout << "Current Grid Status:" << std::endl;
 	for (int i = 1; i < 21; i++) {
 		std::cout << dataAry[i - 1] << ", ";
 		if (i % 4 == 0) {
@@ -161,12 +191,58 @@ void displayFilled(int dataAry[]) {
 	std::cout << "\n";
 }
 
+void resetBoard(std::vector<GamePiece>& pieces, int filledData[]) {
+	using namespace glm;
+
+	int originalFilled[20] = {
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+		1, 0, 0, 1
+	};
+
+	// Big Red Square
+	pieces[0].boardCoord = vec2(1, 0);
+	// Small Green Squares
+	pieces[1].boardCoord = vec2(0, 4);
+	pieces[2].boardCoord = vec2(1, 3);
+	pieces[3].boardCoord = vec2(2, 3);
+	pieces[4].boardCoord = vec2(3, 4);
+	// Horizontal Rectangle
+	pieces[5].boardCoord = vec2(1, 2);
+	// Vertical Rectangle
+	pieces[6].boardCoord = vec2(0, 0);
+	pieces[7].boardCoord = vec2(0, 2);
+	pieces[8].boardCoord = vec2(3, 0);
+	pieces[9].boardCoord = vec2(3, 2);
+
+	for (int i = 0; i < 10; i++) {
+		pieces[i].setBoardPosition();
+	}
+
+	for (int i = 0; i < 20; i++) {
+		filledData[i] = originalFilled[i];
+	}
+}
+
 void gameLoop(GLFWwindow* window)
 {
 	using namespace std;
 	using namespace glm;
-	std::vector<Quad> board = makeBoard(vec2(296, 368), vec2(200,100), 46, 152);
-	std::vector<GamePiece> pieces = makePieces(vec2(200, 100), 64, 8);
+
+	const vec2 CORNER = vec2(200, 44); // vec2(200, 100)
+	const int PIECE_SIZE = 88;          // 64
+	const int SEP_DIST = 12;             // 8
+	const int BORDER_WIDTH = 44;        // 46
+
+	int gridSize = PIECE_SIZE + SEP_DIST;
+	vec2 boardSize = vec2((4 * gridSize + SEP_DIST), (5 * gridSize + SEP_DIST));
+	int gapSize = 2 * gridSize + SEP_DIST;
+
+	std::vector<Quad> board = makeBoard(boardSize, CORNER, BORDER_WIDTH, gapSize);
+	std::vector<GamePiece> pieces = makePieces(CORNER, PIECE_SIZE, SEP_DIST);
+	std::vector<Quad> buttons = makeButtons(vec2(39, 124), 39, 117);
 
 	vec2 coordinates[20] = {
 		vec2(0,0), vec2(1,0), vec2(2,0), vec2(3,0),
@@ -185,10 +261,13 @@ void gameLoop(GLFWwindow* window)
 	};
 
 	GamePiece* heldPiece = nullptr;
-	GamePiece* movePtr = nullptr;
-	double currentX, currentY;
-	double lastX, lastY;
+
+	vec2 currentCell;
+	vec2 lastCell;
+	double xPos, yPos;
 	char direction;
+
+	int moveCounter = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -197,67 +276,67 @@ void gameLoop(GLFWwindow* window)
 		for (Quad quad : board)
 			quad.draw();
 
+		for (Quad b : buttons)
+			b.draw();
+
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
-			glfwGetCursorPos(window, &lastX, &lastY);
+			glfwGetCursorPos(window, &xPos, &yPos);
+			currentCell.x = (int)((xPos - CORNER.x) / gridSize);
+			currentCell.y = (int)((yPos - CORNER.y) / gridSize);
+			//cout << "currentCell: " << currentCell.x << ", " << currentCell.y << endl;
 
-			if (!heldPiece)
+			if (!heldPiece) {
 				for (int i = 0; i < 10; i++)
 				{
-					if (pieces[i].checkCollision(vec2(lastX, lastY)))
+					if (pieces[i].checkCollision(vec2(xPos, yPos)))
 					{
-						std::cout << "Selecting Piece\n" << std::endl;
+						std::cout << "Piece Selected\n" << std::endl;
 						heldPiece = &pieces[i];
+						lastCell = currentCell;
+						//cout << "lastCell: " << lastCell.x << ", "
+						//<< lastCell.y << endl;
 					}
 				}
+			}
+			else {
+				if (currentCell != lastCell) {
+					direction = getDirection(currentCell, lastCell);
+					//cout << "Got " << direction << endl;
+
+					if (heldPiece->isMovableIn(direction, coordinates, filled)) {
+						heldPiece->moveIn(direction, coordinates, filled);
+						heldPiece->setBoardPosition();
+						lastCell = currentCell;
+						//cout << "lastCell: " << lastCell.x << ", " 
+						//<< lastCell.y << endl;
+
+						moveCounter++;
+
+						cout << "Total Number of Moves: " << moveCounter << "\n" << endl;
+						displayFilled(filled);
+					}
+				}
+			}
+
+			if (moveCounter) {
+				if (buttons[1].checkCollision(vec2(xPos, yPos))) {
+					cout << "Reseting Board!\n" << endl;
+					resetBoard(pieces, filled);
+					moveCounter = 0;
+
+					displayFilled(filled);
+				}
+			}
+
+			if (buttons[2].checkCollision(vec2(xPos, yPos))) {
+				cout << "Exiting! Bye-Bye!\n" << endl;
+				glfwSetWindowShouldClose(window, true);
+			}
 		}
 
-		if (heldPiece)
-		{
-			if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-			{
-				direction = 'U';
-				if (heldPiece->isMovableIn(direction, coordinates, filled)) {
-					heldPiece->moveIn(direction, coordinates, filled);
-					heldPiece->setBoardPosition();
-
-					displayFilled(filled);
-				}
-				heldPiece = nullptr;
-			}
-			if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-			{
-				direction = 'D';
-				if (heldPiece->isMovableIn(direction, coordinates, filled)) {
-					heldPiece->moveIn(direction, coordinates, filled);
-					heldPiece->setBoardPosition();
-
-					displayFilled(filled);
-				}
-				heldPiece = nullptr;
-			}
-			if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-			{
-				direction = 'L';
-				if (heldPiece->isMovableIn(direction, coordinates, filled)) {
-					heldPiece->moveIn(direction, coordinates, filled);
-					heldPiece->setBoardPosition();
-
-					displayFilled(filled);
-				}
-				heldPiece = nullptr;
-			}
-			if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-			{
-				direction = 'R';
-				if (heldPiece->isMovableIn(direction, coordinates, filled)) {
-					heldPiece->moveIn(direction, coordinates, filled);
-					heldPiece->setBoardPosition();
-
-					displayFilled(filled);
-				}
-				heldPiece = nullptr;
-			}
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+			heldPiece = nullptr;
 		}
 
 		for (GamePiece p : pieces) {
@@ -269,105 +348,6 @@ void gameLoop(GLFWwindow* window)
 		glfwPollEvents();
 	}
 }
-
-// Mouse Movement Prototype
-// Can't get this to work. The direction function always returns "down" for
-// some reason. Decided to just do arrow key controls for now to get the rest
-// of the logic working. Return to this later.
-/*
-if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-{
-	glfwGetCursorPos(window, &lastX, &lastY);
-
-	if (!heldPiece)
-		for (int i = 0; i < 10; i++)
-		{
-			if (pieces[i].checkCollision(vec2(lastX, lastY)))
-			{
-				std::cout << "Selecting Piece\n" << std::endl;
-				heldPiece = &pieces[i];
-			}
-		}
-}
-
-if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
-{
-	if (heldPiece) {
-		glfwGetCursorPos(window, &currentX, &currentY);
-		direction = getDirection(currentX, currentY, lastX, lastY);
-		std::cout << "Got " << direction << std::endl;
-
-		if (heldPiece->isMovableIn(direction, coordinates, filled)) {
-			heldPiece->moveIn(direction, coordinates, filled);
-		}
-
-		heldPiece = nullptr;
-
-	}
-}
-*/
-
-// Key Movement #1
-/*
-if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-{
-	glfwGetCursorPos(window, &lastX, &lastY);
-
-	if (!heldPiece)
-		for (int i = 0; i < 10; i++)
-		{
-			if (pieces[i].checkCollision(vec2(lastX, lastY)))
-			{
-				std::cout << "Selecting Piece\n" << std::endl;
-				heldPiece = &pieces[i];
-			}
-		}
-}
-
-if (heldPiece)
-{
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		direction = 'U';
-		movePtr = heldPiece;
-		if (movePtr->isMovableIn(direction, coordinates, filled)) {
-			movePtr->moveIn(direction, coordinates, filled);
-			movePtr->setBoardPosition();
-		}
-		movePtr = nullptr;
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		direction = 'D';
-		movePtr = heldPiece;
-		if (movePtr->isMovableIn(direction, coordinates, filled)) {
-			movePtr->moveIn(direction, coordinates, filled);
-			movePtr->setBoardPosition();
-		}
-		movePtr = nullptr;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{
-		direction = 'L';
-		movePtr = heldPiece;
-		if (movePtr->isMovableIn(direction, coordinates, filled)) {
-			movePtr->moveIn(direction, coordinates, filled);
-			movePtr->setBoardPosition();
-		}
-		movePtr = nullptr;
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		direction = 'R';
-		movePtr = heldPiece;
-		if (movePtr->isMovableIn(direction, coordinates, filled)) {
-			movePtr->moveIn(direction, coordinates, filled);
-			movePtr->setBoardPosition();
-		}
-		movePtr = nullptr;
-	}
-}
-*/
 
 // Best so far (Key Movement)
 /*
