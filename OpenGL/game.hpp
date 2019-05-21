@@ -1,9 +1,10 @@
-#pragma once
+#pragma once 
 #include <vector>
 
 #include "glm/glm.hpp"
 #include "Quad.h"
 #include "GamePiece.h"
+#include "MoveStack.h"
 #include "GLFW/glfw3.h"
 
 #include <iostream>
@@ -129,7 +130,7 @@ std::vector<GamePiece> makePieces(glm::vec2 corner, int size, int sepDist) {
 // All buttons are rectangles in a column. refPoint is the upper left corner of 
 // the first button. Size is how tall, width is double the size. sepdits is the
 // seperation between the buttons.
-std::vector<Quad>makeButtons(glm::vec2 refPoint, int size, int sepDist) {
+std::vector<Quad> makeButtons(glm::vec2 refPoint, int size, int sepDist) {
 	using namespace glm;
 
 	std::vector<Quad> buttons(3);
@@ -226,6 +227,30 @@ void resetBoard(std::vector<GamePiece>& pieces, int filledData[]) {
 	}
 }
 
+void undo(TSMoveNodePtr info, glm::vec2 coordinates[], int filled[]) {
+	char undoDirection;
+	GamePiece* targetPiece = info->data.piecePtr;
+
+	if (info->data.direction == 'U') {
+		undoDirection = 'D';
+	}
+	else if (info->data.direction == 'D') {
+		undoDirection = 'U';
+	} else if (info->data.direction == 'R') {
+		undoDirection = 'L';
+	}
+	else {
+		if (info->data.direction == 'L') {
+			undoDirection = 'R';
+		}
+	}
+
+	if (targetPiece->isMovableIn(undoDirection, coordinates, filled)) {
+		targetPiece->moveIn(undoDirection, coordinates, filled);
+		targetPiece->setBoardPosition();
+	}
+}
+
 void gameLoop(GLFWwindow* window)
 {
 	using namespace std;
@@ -244,6 +269,9 @@ void gameLoop(GLFWwindow* window)
 	std::vector<GamePiece> pieces = makePieces(CORNER, PIECE_SIZE, SEP_DIST);
 	std::vector<Quad> buttons = makeButtons(vec2(39, 124), 39, 117);
 
+	MoveStack* undoStack = new MoveStack;
+	TSMoveNodePtr undoInfoPtr = nullptr;
+
 	vec2 coordinates[20] = {
 		vec2(0,0), vec2(1,0), vec2(2,0), vec2(3,0),
 		vec2(0,1), vec2(1,1), vec2(2,1), vec2(3,1),
@@ -261,6 +289,8 @@ void gameLoop(GLFWwindow* window)
 	};
 
 	GamePiece* heldPiece = nullptr;
+
+	bool clicked = false;
 
 	vec2 currentCell;
 	vec2 lastCell;
@@ -315,6 +345,27 @@ void gameLoop(GLFWwindow* window)
 
 						cout << "Total Number of Moves: " << moveCounter << "\n" << endl;
 						displayFilled(filled);
+
+						undoStack->push(direction, heldPiece);
+					}
+				}
+			}
+
+			if (!clicked) {
+				if (buttons[0].checkCollision(vec2(xPos, yPos))) {
+					if (!undoStack->isEmpty()) {
+						cout << "Undoing Last Move\n" << endl;
+						undoInfoPtr = undoStack->pop();
+						undo(undoInfoPtr, coordinates, filled);
+
+						delete undoInfoPtr;
+						undoInfoPtr = nullptr;
+
+						moveCounter--;
+
+						displayFilled(filled);
+
+						clicked = true;
 					}
 				}
 			}
@@ -324,6 +375,7 @@ void gameLoop(GLFWwindow* window)
 					cout << "Reseting Board!\n" << endl;
 					resetBoard(pieces, filled);
 					moveCounter = 0;
+					undoStack->empty();
 
 					displayFilled(filled);
 				}
@@ -337,6 +389,7 @@ void gameLoop(GLFWwindow* window)
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
 			heldPiece = nullptr;
+			clicked = false;
 		}
 
 		for (GamePiece p : pieces) {
@@ -347,6 +400,9 @@ void gameLoop(GLFWwindow* window)
 
 		glfwPollEvents();
 	}
+
+	delete undoStack;
+	undoStack = nullptr;
 }
 
 // Best so far (Key Movement)

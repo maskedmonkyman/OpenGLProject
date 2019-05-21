@@ -141,12 +141,14 @@
   <ItemGroup>
     <ClInclude Include="game.hpp" />
     <ClInclude Include="GamePiece.h" />
+    <ClInclude Include="MoveStack.h" />
     <ClInclude Include="playground.hpp" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Quad.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePiece.cpp" />
+    <ClCompile Include="MoveStack.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Quad.cpp" />

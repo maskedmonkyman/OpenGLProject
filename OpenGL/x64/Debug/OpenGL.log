@@ -1,8 +1,8 @@
 ﻿  Source.cpp
 c:\users\keven\documents\github\openglproject\opengl\playground.hpp(196): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\keven\documents\github\openglproject\opengl\playground.hpp(235): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\keven\documents\github\openglproject\opengl\game.hpp(74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\keven\documents\github\openglproject\opengl\game.hpp(79): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\keven\documents\github\openglproject\opengl\game.hpp(314): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\keven\documents\github\openglproject\opengl\game.hpp(75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\keven\documents\github\openglproject\opengl\game.hpp(80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\keven\documents\github\openglproject\opengl\game.hpp(315): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\keven\documents\github\openglproject\opengl\game.hpp(316): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   OpenGL.vcxproj -> C:\Users\Keven\Documents\GitHub\OpenGLProject\x64\Debug\OpenGL.exe
