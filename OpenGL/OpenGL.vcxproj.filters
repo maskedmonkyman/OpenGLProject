@@ -26,19 +26,16 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="playground.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Quad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GamePiece.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MoveStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,6 +53,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MoveStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
