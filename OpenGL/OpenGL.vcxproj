@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{BF72C9F6-C0E7-4F6E-9CBC-BA7B40697BDE}</ProjectGuid>
     <RootNamespace>OpenGL</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -139,14 +139,14 @@
     <None Include="..\..\..\..\Documents\Visual Studio 2017\Projects\shared\OpenGL\OpenGL\res\vertex.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game.hpp" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="GamePiece.h" />
     <ClInclude Include="MoveStack.h" />
-    <ClInclude Include="playground.hpp" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Quad.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GamePiece.cpp" />
     <ClCompile Include="MoveStack.cpp" />
     <ClCompile Include="Shader.cpp" />

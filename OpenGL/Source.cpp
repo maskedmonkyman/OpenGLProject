@@ -1,8 +1,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "Quad.h"
-#include "playground.hpp"
-#include "game.hpp"
+#include "game.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -43,10 +42,6 @@ int main()
 	Quad::initBuffers(shader);
 
 	//main loop
-	//circleLoop(window);
-	//gridLoop(window);
-	//testLoop(window);
-	//collisionTestLoop(window);
 	gameLoop(window);
 
 	Quad::destroyBuffers();
