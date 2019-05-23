@@ -21,4 +21,6 @@ void resetBoard(std::vector<GamePiece>& pieces, int filledData[]);
 
 void undo(TSMoveNodePtr info, glm::vec2 coordinates[], int filled[]);
 
+void solve(std::vector<GamePiece>& pieces, int filled[]);
+
 void gameLoop(GLFWwindow* window);
