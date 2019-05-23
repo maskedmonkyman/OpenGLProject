@@ -10,7 +10,7 @@ class GamePiece : public Quad
 {
 private:
 	static glm::vec2 refPoint;
-	static int gridSize;
+	static int cellSize;
 	int type;
 public:
 	glm::vec2 boardCoord;
@@ -24,7 +24,7 @@ public:
 
 	// static functions
 	static void setRefPoint(const glm::vec2&);
-	static void setGridSize(int);
+	static void setCellSize(int);
 	
 	// setter for private member
 	void setType(int);
@@ -35,7 +35,7 @@ public:
 	void moveIn(char direction, glm::vec2[], int[]);
 };
 
-// Type (using an int to represent each type of piece for now)
+// Type (using an int to represent each type of piece)
 // Small Square - 1
 // Big Square - 2
 // Tall Rectangle - 3

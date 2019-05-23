@@ -1,7 +1,7 @@
 #include "MoveStack.h"
 #include <iostream>
 
-MoveStack::MoveStack() : moveList(nullptr) {}
+MoveStack::MoveStack() : movesList(nullptr) {}
 
 MoveStack::~MoveStack() {
 	this->empty();
@@ -14,16 +14,16 @@ void MoveStack::push(char direction, GamePiece* piece) {
 	newNode->data.piecePtr = piece;
 	newNode->next = nullptr;
 
-	newNode->next = moveList;
-	moveList = newNode;
+	newNode->next = movesList;
+	movesList = newNode;
 }
 
 TSMoveNodePtr MoveStack::pop() {
 	TSMoveNodePtr popped = nullptr;
 
-	if (moveList) {
-		popped = moveList;
-		moveList = moveList->next;
+	if (movesList) {
+		popped = movesList;
+		movesList = movesList->next;
 	}
 	popped->next = nullptr;
 
@@ -33,7 +33,7 @@ TSMoveNodePtr MoveStack::pop() {
 bool MoveStack::isEmpty() {
 	bool isEmpty;
 
-	if (moveList) {
+	if (movesList) {
 		isEmpty = false;
 	}
 	else {

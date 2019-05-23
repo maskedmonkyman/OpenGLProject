@@ -2,6 +2,11 @@
 c:\users\keven\documents\github\openglproject\opengl\game.cpp(76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\keven\documents\github\openglproject\opengl\game.cpp(81): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\keven\documents\github\openglproject\opengl\game.cpp(147): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\keven\documents\github\openglproject\opengl\game.cpp(340): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\keven\documents\github\openglproject\opengl\game.cpp(341): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\keven\documents\github\openglproject\opengl\game.cpp(346): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\keven\documents\github\openglproject\opengl\game.cpp(347): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  GamePiece.cpp
+  MoveStack.cpp
+  Quad.cpp
+  Source.cpp
+  Generating Code...
   OpenGL.vcxproj -> C:\Users\Keven\Documents\GitHub\OpenGLProject\x64\Debug\OpenGL.exe

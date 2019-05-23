@@ -17,7 +17,6 @@ const GLuint Quad::squareIndecies[6] =
 GLuint Quad::vertexBufferID = 0;
 GLuint Quad::indexBufferID = 0;
 GLuint Quad::shaderID = 0;
-unsigned int Quad::totatlSquares = 0;
 
 void Quad::initBuffers(GLuint shader)
 {
@@ -47,10 +46,7 @@ void Quad::destroyBuffers()
 //constructor
 Quad::Quad(glm::vec2 position, float rotation, glm::vec2 scale, glm::vec3 color)
 	: pos(position), scale(scale), rotation(rotation), color(color)
-{
-	totatlSquares++;
-	id = totatlSquares;
-}
+{}
 
 void Quad::draw()
 {
@@ -88,16 +84,6 @@ bool Quad::checkCollision(glm::vec2 point)
 		return true;
 	}
 	return false;
-}
-
-bool Quad::checkCollision(const Quad& other) {
-	bool collisionX = originOffset.x + scale.x >= other.originOffset.x &&
-		other.originOffset.x + other.scale.x >= originOffset.x;
-
-	bool collisionY = originOffset.y + scale.y >= other.originOffset.y &&
-		other.originOffset.y + other.scale.y >= originOffset.y;
-
-	return collisionX && collisionY;
 }
 
 Quad::~Quad()

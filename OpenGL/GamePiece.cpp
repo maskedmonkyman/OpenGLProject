@@ -2,7 +2,7 @@
 #include <iostream>
 
 glm::vec2 GamePiece::refPoint = glm::vec2(0);
-int GamePiece::gridSize = 0;
+int GamePiece::cellSize = 0;
 
 GamePiece::GamePiece(int t, glm::vec2 coordinate) {
 	type = t;
@@ -15,8 +15,8 @@ void GamePiece::setRefPoint(const glm::vec2& corner) {
 	refPoint = corner;
 }
 
-void GamePiece::setGridSize(int size) {
-	gridSize = size;
+void GamePiece::setCellSize(int size) {
+	cellSize = size;
 }
 
 void GamePiece::setType(int t) {
@@ -24,11 +24,10 @@ void GamePiece::setType(int t) {
 }
 
 void GamePiece::setBoardPosition() {
-	pos = glm::vec2(refPoint.x + (boardCoord.x * gridSize),
-		refPoint.y + (boardCoord.y * gridSize));
+	pos = glm::vec2(refPoint.x + (boardCoord.x * cellSize),
+		refPoint.y + (boardCoord.y * cellSize));
 }
 
-// Both of these are horrible looking but they work.
 bool GamePiece::isMovableIn(char direction, glm::vec2 coordData[], int filledData[])
 {
 	using namespace std;
@@ -136,113 +135,113 @@ void GamePiece::moveIn(char direction, glm::vec2 coordData[], int filledData[]) 
 	using namespace glm;
 	using namespace std;
 
-	vec2 empty1 = vec2(-1, -1);
-	vec2 empty2 = vec2(-1, -1);
-	vec2 fill1 = vec2(-1, -1);
-	vec2 fill2 = vec2(-1, -1);
+	vec2 toEmptyCoord1 = vec2(-1, -1);
+	vec2 toEmptyCoord2 = vec2(-1, -1);
+	vec2 toFillCoord1 = vec2(-1, -1);
+	vec2 toFillCoord2 = vec2(-1, -1);
 
 	// Finds out which coordinates need to be filled or emptied in the move
 	if (type == 1) {
 		if (direction == 'U') {
-			empty1 = boardCoord;
-			fill1 = boardCoord + vec2(0, -1);
+			toEmptyCoord1 = boardCoord;
+			toFillCoord1 = boardCoord + vec2(0, -1);
 		}
 		else if (direction == 'D') {
-			empty1 = boardCoord;
-			fill1 = boardCoord + vec2(0, 1);
+			toEmptyCoord1 = boardCoord;
+			toFillCoord1 = boardCoord + vec2(0, 1);
 		}
 		else if (direction == 'R') {
-			empty1 = boardCoord;
-			fill1 = boardCoord + vec2(1, 0);
+			toEmptyCoord1 = boardCoord;
+			toFillCoord1 = boardCoord + vec2(1, 0);
 		}
 		else if (direction == 'L') {
-			empty1 = boardCoord;
-			fill1 = boardCoord + vec2(-1, 0);
+			toEmptyCoord1 = boardCoord;
+			toFillCoord1 = boardCoord + vec2(-1, 0);
 		}
 	}
 	else if (type == 2) {
 		if (direction == 'U') {
-			empty1 = boardCoord + vec2(0, 1);
-			empty2 = boardCoord + vec2(1, 1);
-			fill1 = boardCoord + vec2(0, -1);
-			fill2 = boardCoord + vec2(1, -1);
+			toEmptyCoord1 = boardCoord + vec2(0, 1);
+			toEmptyCoord2 = boardCoord + vec2(1, 1);
+			toFillCoord1 = boardCoord + vec2(0, -1);
+			toFillCoord2 = boardCoord + vec2(1, -1);
 		}
 		else if (direction == 'D') {
-			empty1 = boardCoord + vec2(0, 0);
-			empty2 = boardCoord + vec2(1, 0);
-			fill1 = boardCoord + vec2(0, 2);
-			fill2 = boardCoord + vec2(1, 2);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toEmptyCoord2 = boardCoord + vec2(1, 0);
+			toFillCoord1 = boardCoord + vec2(0, 2);
+			toFillCoord2 = boardCoord + vec2(1, 2);
 		}
 		else if (direction == 'R') {
-			empty1 = boardCoord + vec2(0, 0);
-			empty2 = boardCoord + vec2(0, 1);
-			fill1 = boardCoord + vec2(2, 0);
-			fill2 = boardCoord + vec2(2, 1);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toEmptyCoord2 = boardCoord + vec2(0, 1);
+			toFillCoord1 = boardCoord + vec2(2, 0);
+			toFillCoord2 = boardCoord + vec2(2, 1);
 		}
 		else if (direction == 'L') {
-			empty1 = boardCoord + vec2(1, 0);
-			empty2 = boardCoord + vec2(1, 1);
-			fill1 = boardCoord + vec2(-1, 0);
-			fill2 = boardCoord + vec2(-1, 1);
+			toEmptyCoord1 = boardCoord + vec2(1, 0);
+			toEmptyCoord2 = boardCoord + vec2(1, 1);
+			toFillCoord1 = boardCoord + vec2(-1, 0);
+			toFillCoord2 = boardCoord + vec2(-1, 1);
 		}
 	}
 	else if (type == 3) {
 		if (direction == 'U') {
-			empty1 = boardCoord + vec2(0, 1);
-			fill1 = boardCoord + vec2(0, -1);
+			toEmptyCoord1 = boardCoord + vec2(0, 1);
+			toFillCoord1 = boardCoord + vec2(0, -1);
 		}
 		else if (direction == 'D') {
-			empty1 = boardCoord + vec2(0, 0);
-			fill1 = boardCoord + vec2(0, 2);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toFillCoord1 = boardCoord + vec2(0, 2);
 		}
 		else if (direction == 'R') {
-			empty1 = boardCoord + vec2(0, 0);
-			empty2 = boardCoord + vec2(0, 1);
-			fill1 = boardCoord + vec2(1, 0);
-			fill2 = boardCoord + vec2(1, 1);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toEmptyCoord2 = boardCoord + vec2(0, 1);
+			toFillCoord1 = boardCoord + vec2(1, 0);
+			toFillCoord2 = boardCoord + vec2(1, 1);
 		}
 		else if (direction == 'L') {
-			empty1 = boardCoord + vec2(0, 0);
-			empty2 = boardCoord + vec2(0, 1);
-			fill1 = boardCoord + vec2(-1, 0);
-			fill2 = boardCoord + vec2(-1, 1);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toEmptyCoord2 = boardCoord + vec2(0, 1);
+			toFillCoord1 = boardCoord + vec2(-1, 0);
+			toFillCoord2 = boardCoord + vec2(-1, 1);
 		}
 	}
 	else if (type == 4) {
 		if (direction == 'U') {
-			empty1 = boardCoord + vec2(0, 0);
-			empty2 = boardCoord + vec2(1, 0);
-			fill1 = boardCoord + vec2(0, -1);
-			fill2 = boardCoord + vec2(1, -1);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toEmptyCoord2 = boardCoord + vec2(1, 0);
+			toFillCoord1 = boardCoord + vec2(0, -1);
+			toFillCoord2 = boardCoord + vec2(1, -1);
 		}
 		else if (direction == 'D') {
-			empty1 = boardCoord + vec2(0, 0);
-			empty2 = boardCoord + vec2(1, 0);
-			fill1 = boardCoord + vec2(0, 1);
-			fill2 = boardCoord + vec2(1, 1);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toEmptyCoord2 = boardCoord + vec2(1, 0);
+			toFillCoord1 = boardCoord + vec2(0, 1);
+			toFillCoord2 = boardCoord + vec2(1, 1);
 		}
 		else if (direction == 'R') {
-			empty1 = boardCoord + vec2(0, 0);
-			fill1 = boardCoord + vec2(2, 0);
+			toEmptyCoord1 = boardCoord + vec2(0, 0);
+			toFillCoord1 = boardCoord + vec2(2, 0);
 		}
 		else if (direction == 'L') {
-			empty1 = boardCoord + vec2(1, 0);
-			fill1 = boardCoord + vec2(-1, 0);
+			toEmptyCoord1 = boardCoord + vec2(1, 0);
+			toFillCoord1 = boardCoord + vec2(-1, 0);
 		}
 	}
 
 	// Updates the filled array accordingly
 	for (int i = 0; i < 20; i++) {
-		if (coordData[i] == empty1) {
+		if (coordData[i] == toEmptyCoord1) {
 			filledData[i] = 0;
 		}
-		else if (coordData[i] == empty2) {
+		else if (coordData[i] == toEmptyCoord2) {
 			filledData[i] = 0;
 		}
-		else if (coordData[i] == fill1) {
+		else if (coordData[i] == toFillCoord1) {
 			filledData[i] = 1;
 		}
-		else if (coordData[i] == fill2) {
+		else if (coordData[i] == toFillCoord2) {
 			filledData[i] = 1;
 		}
 	}

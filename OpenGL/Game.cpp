@@ -66,7 +66,7 @@ std::vector<GamePiece> makePieces(glm::vec2 corner, int size, int sepDist) {
 	using namespace glm;
 
 	GamePiece::setRefPoint(vec2(corner.x + sepDist, corner.y + sepDist));
-	GamePiece::setGridSize(size + sepDist);
+	GamePiece::setCellSize(size + sepDist);
 
 	std::vector<GamePiece> pieces(10);
 
@@ -122,8 +122,8 @@ std::vector<GamePiece> makePieces(glm::vec2 corner, int size, int sepDist) {
 	return pieces;
 }
 
-// All buttons are rectangles in a column. refPoint is the upper left corner of 
-// the first button. Size is how tall, width is double the size. sepdits is the
+// Four buttons, two on either side. refPoint is the upper left corner of 
+// the first button. Size is how tall and wide. sepdist is the
 // seperation between the buttons.
 std::vector<Quad> makeButtons(glm::vec2 refPoint, int size, int sepDist) {
 	using namespace glm;
@@ -137,9 +137,9 @@ std::vector<Quad> makeButtons(glm::vec2 refPoint, int size, int sepDist) {
 	// 3 is EXIT
 
 	// Color
-	buttons[0].color = vec3(1, 0.834, 0);
-	buttons[1].color = vec3(0.980, 0.502, 0.447);
-	buttons[2].color = vec3(1, 1, 1);
+	buttons[0].color = vec3(1, 0.843, 0);
+	buttons[1].color = vec3(0, 0.392, 0.);
+	buttons[2].color = vec3(0.545, 0, 0);
 	buttons[3].color = vec3(0.282, 0.239, 0.545);
 
 	// Scale
@@ -281,10 +281,10 @@ void gameLoop(GLFWwindow* window)
 	using namespace std;
 	using namespace glm;
 
-	const vec2 CORNER = vec2(216, 64); // vec2(200, 100)
-	const int PIECE_SIZE = 80;          // 64
-	const int SEP_DIST = 12;             // 8
-	const int BORDER_WIDTH = 44;        // 46
+	const vec2 CORNER = vec2(216, 64);
+	const int PIECE_SIZE = 80;
+	const int SEP_DIST = 12;
+	const int BORDER_WIDTH = 44;
 
 	int gridSize = PIECE_SIZE + SEP_DIST;
 	vec2 boardSize = vec2((4 * gridSize + SEP_DIST), (5 * gridSize + SEP_DIST));
@@ -294,7 +294,7 @@ void gameLoop(GLFWwindow* window)
 	std::vector<GamePiece> pieces = makePieces(CORNER, PIECE_SIZE, SEP_DIST);
 	std::vector<Quad> buttons = makeButtons(vec2(36, 124), 80, 117);
 
-	MoveStack* undoStack = new MoveStack;
+	MoveStack* undoStack = new MoveStack();
 	TSMoveNodePtr undoInfoPtr = nullptr;
 
 	vec2 cellCoordinates[20] = {
@@ -323,6 +323,12 @@ void gameLoop(GLFWwindow* window)
 	char direction;
 
 	int moveCounter = 0;
+
+	cout << "\nSQUARES ON EACH SIDE:" <<
+		"\n  UNDO  - Gold" <<
+		"\n  RESET - Dark Green" <<
+		"\n  CHEAT - Dark Red" <<
+		"\n  EXIT  - Purple\n\n" << endl;
 
 	while (!glfwWindowShouldClose(window))
 	{

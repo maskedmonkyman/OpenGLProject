@@ -25,7 +25,7 @@ typedef struct MoveNode* TSMoveNodePtr;
 
 class MoveStack {
 private:
-	TSMoveNodePtr moveList;
+	TSMoveNodePtr movesList;
 
 public:
 	MoveStack();

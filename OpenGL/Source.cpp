@@ -61,7 +61,7 @@ GLFWwindow* init()
 		return nullptr;
 	}
 
-	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "hello openGL", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Group 2 Klotski", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();

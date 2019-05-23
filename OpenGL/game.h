@@ -17,7 +17,7 @@ std::vector<Quad> makeButtons(glm::vec2 refPoint, int size, int sepDist);
 
 char getDirection(glm::vec2& currentCell, glm::vec2& lastCell);
 
-void resetBoard(std::vector<GamePiece>& pieces, int filledData[]);
+void resetBoard(std::vector<GamePiece>& pieces, int filled[]);
 
 void undo(TSMoveNodePtr info, glm::vec2 coordinates[], int filled[]);
 

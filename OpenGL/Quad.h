@@ -15,10 +15,8 @@ private:
 	static GLuint vertexBufferID;
 	static GLuint indexBufferID;
 	static GLuint shaderID;
-	static unsigned int totatlSquares;
 
 public:
-	unsigned int id;
 	glm::vec2 pos;
 	glm::vec2 originOffset = glm::vec2(0);
 	glm::vec2 scale;
@@ -42,7 +40,6 @@ public:
 	void setOriginTopRight();
 	bool checkCollision(glm::vec2 point);
 
-	bool checkCollision(const Quad& other);
 	~Quad();
 };
 
